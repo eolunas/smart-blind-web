@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>WEB-Control</title>
+   <script>
+   window.setInterval(function(){
+      nocache = "&nocache=" + Math.random() * 10;
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = function() {
+         if (this.readyState == 4) {
+            if (this.status == 200) {
+               if (this.responseText != null) {
+                  document.getElementById("analoge_data").innerHTML = this.responseText;
+               }
+            }
+         }
+      }
+      request.open("GET", "ajaxrefresh" + nocache, true);
+      request.send(null);
+   }, 2000);
+
+   function changeLEDStatus() {
+      nocache = "&nocache=" + Math.random() * 10;
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = function() {
+      if (this.readyState == 4) {
+         if (this.status == 200) {
+            if (this.responseText != null) {
+               document.getElementById("led_status").innerHTML = this.responseText;
+            }
+         }
+      }
+   }
+      request.open("GET", "?ledstatus=1" + nocache, true);
+      request.send(null);
+   }
+      </script>
+<body>
+   <div id="app">
+      <h1>Position</h1>
+      <div id="analoge_data">Arduino analog input values loading.....</div>
+      <h1>Arduino LED Status</h1>
+      <div><span id="led_status">
+      Off
+      </span> | <button onclick="changeLEDStatus()">Change Status</button> </div>
+   </div>
+</body>
+</html>

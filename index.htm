@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>WEB-Control</title>
+   <style>
+      #app{
+         background-color: darkgray;
+      }
+      #motor-control{
+         background-color: darkgreen;
+      }
+   </style>
+   <script>
+   window.setInterval(() => {
+      nocache = "&nocache=" + Math.random() * 10;
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = function() {
+         if (this.readyState == 4) {
+            if (this.status == 200) {
+               if (this.responseText != null) {
+                  document.getElementById("sensor").innerHTML = this.responseText;
+               }
+            }
+         }
+      }
+      request.open("GET", "ajaxrefresh" + nocache, true);
+      request.send(null);
+   }, 2000);
+
+   moveUpBlackOut = () => {
+      nocache = "&nocache=" + Math.random() * 10;
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = function() {
+         if (this.readyState == 4) {
+            if (this.status == 200) {
+               if (this.responseText != null) { 
+                  document.getElementById("moveUp-indicator").innerHTML = this.responseText;
+               }
+            }
+         }
+      };
+      request.open("GET", "?isBlackOutUp=1" + nocache, true);
+      request.send(null);
+   };
+
+   moveDownBlackOut = () => {
+      nocache = "&nocache=" + Math.random() * 10;
+      var request = new XMLHttpRequest();
+      request.onreadystatechange = function() {
+         if (this.readyState == 4) {
+            if (this.status == 200) {
+               if (this.responseText != null) { 
+                  document.getElementById("moveDown-indicator").innerHTML = this.responseText;
+               }
+            }
+         }
+      };
+      request.open("GET", "?isBlackOutDown=1" + nocache, true);
+      request.send(null);
+   };
+
+   </script>
+<body>
+   <div id="app">
+      <h1>BlackOut Position</h1>
+      <div id="sensor">Position value loading...</div>
+      <h1>Arduino LED Status</h1>
+      <div id="motor-control">
+         <span id="moveUp-indicator">stop</span> |
+         <button onclick="moveUpBlackOut()">Up blackOut</button> 
+         <span id="moveDown-indicator">stop</span> |
+         <button onclick="moveDownBlackOut()">Down blackOut</button> 
+      </div>
+   </div>
+</body>
+</html>
