@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>WEB-Control</title>
+   <link rel="stylesheet" href="css/style.css">
+<body>
+   <div id="app">
+      <h1>BlackOut Position</h1>
+      <div id="sensor">Position value loading...</div>
+      <h1>Arduino LED Status</h1>
+      <div id="motor-control">
+         <span id="moveUp-indicator">stop</span> |
+         <button onclick="moveUpBlackOut()">Up blackOut</button> 
+         <span id="moveDown-indicator">stop</span> |
+         <button onclick="moveDownBlackOut()">Down blackOut</button> 
+      </div>
+   </div>
+   <script src="scripts/script.js"></script>
+</body>
+</html>
