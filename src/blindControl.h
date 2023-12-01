@@ -1,4 +1,5 @@
 #include <Arduino.h>
 
-void setupBlind(int upPin, int downPin, uint8_t readPin);
+void setupBlind(uint8_t up, uint8_t down, uint8_t read);
 int blindPosition();
+String goToPosition(double target);
