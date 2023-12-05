@@ -23,7 +23,7 @@ void setup() {
   server.begin();
 
   setupBlind(6, 5, A0);
-  target = 0.1;
+  target = openRate();
 }
 
 void loop() {
@@ -60,7 +60,7 @@ void loop() {
 
         StaticJsonDocument<96> doc;
 
-        doc["position"] = blindPosition();
+        doc["position"] = openRate();
         doc["wake-up"] = "06:30:00";
         doc["go-bed"] = "22:00:00";
         doc["time"] = time;

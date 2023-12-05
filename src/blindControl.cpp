@@ -7,7 +7,7 @@ uint16_t readPin;
 const int MINPOS = 20;
 const int MAXPOS = 1004;
 int openPos = 33;
-int closePos = 750;
+int closePos = 755;
 
 void setupBlind(uint8_t up, uint8_t down, uint8_t read) {
   upPin = up;
@@ -19,6 +19,12 @@ void setupBlind(uint8_t up, uint8_t down, uint8_t read) {
 };
 int scaler(double value) { return value * (closePos - openPos) + openPos; }
 int blindPosition() { return analogRead(readPin); }
+double openRate() {
+  double scaledValue =
+      ((blindPosition() - openPos) * 1.00 / (closePos - openPos));
+  Serial.println(scaledValue);
+  return scaledValue;
+}
 
 String goToPosition(double target) {
   String message = "";
