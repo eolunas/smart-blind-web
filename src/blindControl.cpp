@@ -2,62 +2,56 @@
 
 uint8_t upPin;
 uint8_t downPin;
-uint16_t readPin;
+uint8_t readPin;
 
-const int MINPOS = 20;
-const int MAXPOS = 1004;
-int openPos = 33;
-int closePos = 755;
+int openPos;
+int closePos;
 
-void setupBlind(uint8_t up, uint8_t down, uint8_t read) {
+void setupBlind(uint8_t up, uint8_t down, uint8_t read, int open, int close) {
   upPin = up;
   downPin = down;
   readPin = read;
+  openPos = (open > 20 && open < 1000) ? open : 33;
+  closePos = (close > 20 && close < 1000) ? close : 750;
 
   pinMode(upPin, OUTPUT);
   pinMode(downPin, OUTPUT);
-};
-int scaler(double value) { return value * (closePos - openPos) + openPos; }
-int blindPosition() { return analogRead(readPin); }
-double openRate() {
-  double scaledValue =
-      ((blindPosition() - openPos) * 1.00 / (closePos - openPos));
-  Serial.println(scaledValue);
-  return scaledValue;
 }
 
-String goToPosition(double target) {
-  String message = "";
-  if (target < 0.0 || target > 1.0) {
-    message = "TARGET INVALID";
-  } else {
-    int sTarget = scaler(target);
-    // Controler:
-    int error = blindPosition() - sTarget;
+uint8_t openRate() {
+  double value =
+      ((analogRead(readPin) - openPos) * 1.0) / ((closePos - openPos) * 1.0);
+  return 100 * value;
+}
 
-    if (abs(error) > 15) {
+uint8_t moveTo(uint8_t target) {
+  uint8_t errCode = 0;
+  if (target < 0 || target > 100) {
+    errCode = 1;
+  } else {
+    int error = openRate() - target;
+    if (abs(error) > 2) {
       if (error > 0) {
-        analogWrite(upPin, 255);
-        analogWrite(downPin, 0);
+        digitalWrite(upPin, HIGH);
+        digitalWrite(downPin, LOW);
       } else {
-        analogWrite(downPin, 255);
-        analogWrite(upPin, 0);
+        digitalWrite(downPin, HIGH);
+        digitalWrite(upPin, LOW);
       }
     } else {
-      analogWrite(downPin, 0);
-      analogWrite(upPin, 0);
+      digitalWrite(downPin, LOW);
+      digitalWrite(upPin, LOW);
     }
   }
 
-  // Error position codes:
-  if (blindPosition() < MINPOS) {
-    analogWrite(upPin, 0);
-    message = "MIN LIMIT";
+  if (analogRead(readPin) < 20) {
+    digitalWrite(upPin, LOW);
+    errCode = 2;
   }
-  if (blindPosition() > MAXPOS) {
-    analogWrite(downPin, 0);
-    message = "MAX LIMIT";
+  if (analogRead(readPin) > 1000) {
+    digitalWrite(downPin, LOW);
+    errCode = 3;
   }
 
-  return message;
+  return errCode;
 }
