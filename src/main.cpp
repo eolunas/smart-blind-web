@@ -13,15 +13,14 @@ String HTTP_req = "";
 
 // Variable SD storage
 char params[4][10];
-long prevMillis = 0;
 RTC_DS3231 rtc;
 
 // Variable for position control
 uint8_t target;
-char time[9] = "00:00:00";
 
 void setup() {
   rtc.begin();
+  //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   setupDB(4, params);
   Ethernet.begin(mac, ip, gateway, gateway, subnet);
   server.begin();
@@ -32,6 +31,8 @@ void setup() {
 void loop() {
   // Servo functions with securuty limits:
   uint8_t code = moveTo(target);
+
+  DateTime time = rtc.now();
 
   EthernetClient client = server.available();
   if (client) {
@@ -58,7 +59,7 @@ void loop() {
           doc["position"] = openRate();
           doc["wake-up"] = params[0];
           doc["go-bed"] = params[1];
-          doc["time"] = time;
+          doc["time"] = (String)time.hour() + ":" + (String)time.minute();
           doc["message"] = code;
 
           client.println(F("HTTP/1.0 200 OK"));
